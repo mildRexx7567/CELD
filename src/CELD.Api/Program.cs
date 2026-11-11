@@ -5,12 +5,8 @@ using CELD.Infrastructure.Equipment;
 using CELD.Application.Lending;
 using CELD.Infrastructure.Lending;
 using CELD.Api.Contracts.Students;
-using CELD.Infrastructure.Lending;
-using CELD.Application.Lending;
 using CELD.Api.Contracts.Reservations;
-using CELD.Infrastructure.Lending;
 using CELD.Api.Contracts.Lending;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +67,10 @@ app.MapGet(
     {
         var equipment =
             await equipmentService.ListAsync(
+                new EquipmentSearchFilter(
+                    null,
+                    null,
+                    null),
                 cancellationToken);
 
         return Results.Ok(equipment);
@@ -94,8 +94,8 @@ app.MapGet(
                     x.LastName,
                     x.Email)));
     });
-    
-    app.MapPost(
+
+app.MapPost(
     "/api/students",
     async (
         CreateStudentRequest request,
@@ -138,6 +138,7 @@ app.MapGet(
                     x.ReservedFromUtc,
                     x.ReservedUntilUtc)));
     });
+
 app.MapPost(
     "/api/reservations",
     async (
@@ -231,6 +232,20 @@ app.MapPost(
                 transaction.StudentNumber,
                 transaction.CheckedOutUtc,
                 transaction.ReturnedUtc));
+    });
+
+app.MapGet(
+    "/api/equipment/availability",
+    async (
+        IEquipmentService equipmentService,
+        CancellationToken cancellationToken) =>
+    {
+        var availability =
+            await equipmentService
+                .ListAvailabilityAsync(
+                    cancellationToken);
+
+        return Results.Ok(availability);
     });
     
 app.Run();
