@@ -1,0 +1,17 @@
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\bin\Debug\net10.0\CELD.Infrastructure.deps.json
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\bin\Debug\net10.0\CELD.Infrastructure.dll
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\bin\Debug\net10.0\CELD.Infrastructure.pdb
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\bin\Debug\net10.0\CELD.Application.dll
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\bin\Debug\net10.0\CELD.Application.pdb
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\CELD.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\CELD.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\CELD.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\CELD.Infrastructure.AssemblyInfo.cs
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\CELD.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\CELD.Inf.EF9464DF.Up2Date
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\CELD.Infrastructure.dll
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\refint\CELD.Infrastructure.dll
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\CELD.Infrastructure.pdb
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\ref\CELD.Infrastructure.dll
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\bin\Debug\net10.0\CELD.Infrastructure.runtimeconfig.json
+C:\Users\happy\Projects\CELD\src\CELD.Infrastructure\obj\Debug\net10.0\CELD.Infrastructure.genruntimeconfig.cache

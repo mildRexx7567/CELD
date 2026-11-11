@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CELD.Api/CELD.Api.csproj" />
+    <Project Path="src/CELD.Application/CELD.Application.csproj" />
+    <Project Path="src/CELD.Infrastructure/CELD.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CELD.Api.Tests/CELD.Api.Tests.csproj" />
+  </Folder>
+</Solution>
