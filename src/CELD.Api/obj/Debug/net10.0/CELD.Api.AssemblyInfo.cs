@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CELD.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc0246f5d6f8bc56f651c7d87e41de94337840af")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+793272ed7f502016e6167ca208773148fbcd044a")]
 [assembly: System.Reflection.AssemblyProductAttribute("CELD.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CELD.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

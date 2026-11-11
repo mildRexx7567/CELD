@@ -17,11 +17,44 @@ public sealed class EfStudentService
 
     public async Task<IReadOnlyList<StudentView>>
         ListAsync(
+            StudentSearchFilter filter,
             CancellationToken cancellationToken = default)
     {
-        return await _db.Students
-            .Select(x =>
-                new StudentView(
+        var query =
+            _db.Students
+                .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(
+            filter.StudentNumber))
+        {
+            query =
+                query.Where(
+                    x => x.StudentNumber.Contains(
+                        filter.StudentNumber));
+        }
+
+        if (!string.IsNullOrWhiteSpace(
+            filter.Name))
+        {
+            query =
+                query.Where(
+                    x =>
+                        x.FirstName.Contains(filter.Name) ||
+                        x.LastName.Contains(filter.Name));
+        }
+
+        if (!string.IsNullOrWhiteSpace(
+            filter.Email))
+        {
+            query =
+                query.Where(
+                    x => x.Email.Contains(
+                        filter.Email));
+        }
+
+        return await query
+            .Select(
+                x => new StudentView(
                     x.StudentNumber,
                     x.FirstName,
                     x.LastName,

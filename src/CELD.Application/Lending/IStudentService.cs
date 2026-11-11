@@ -2,9 +2,10 @@ namespace CELD.Application.Lending;
 
 public interface IStudentService
 {
-    Task<IReadOnlyList<StudentView>>
-        ListAsync(
-            CancellationToken cancellationToken = default);
+Task<IReadOnlyList<StudentView>>
+    ListAsync(
+        StudentSearchFilter filter,
+        CancellationToken cancellationToken = default);
 
     Task<StudentView>
         CreateAsync(

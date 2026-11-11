@@ -84,6 +84,10 @@ app.MapGet(
     {
         var students =
             await studentService.ListAsync(
+                new StudentSearchFilter(
+                    null,
+                    null,
+                    null),
                 cancellationToken);
 
         return Results.Ok(
