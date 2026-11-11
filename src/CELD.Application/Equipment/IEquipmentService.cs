@@ -30,4 +30,14 @@ public interface IEquipmentService
     GetReservationHistoryAsync(
         Guid equipmentItemId,
         CancellationToken cancellationToken = default); 
+
+    Task<EquipmentDetail>
+    CreateAsync(
+        CreateEquipmentCommand command,
+        CancellationToken cancellationToken = default);
+
+Task<EquipmentDetail?>
+    UpdateAsync(
+        UpdateEquipmentCommand command,
+        CancellationToken cancellationToken = default);
 }

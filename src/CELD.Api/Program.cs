@@ -7,6 +7,7 @@ using CELD.Infrastructure.Lending;
 using CELD.Api.Contracts.Students;
 using CELD.Api.Contracts.Reservations;
 using CELD.Api.Contracts.Lending;
+using CELD.Api.Contracts.Equipment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -394,7 +395,52 @@ app.MapGet(
         return Results.Ok(
             history);
     });
-    
+
+app.MapPost(
+    "/api/equipment",
+    async (
+        CreateEquipmentRequest request,
+        IEquipmentService equipmentService,
+        CancellationToken cancellationToken) =>
+    {
+        var equipment =
+            await equipmentService.CreateAsync(
+                new CreateEquipmentCommand(
+                    request.AssetTag,
+                    request.Name,
+                    request.CategoryId),
+                cancellationToken);
+
+        return Results.Ok(
+            equipment);
+    });
+
+app.MapPatch(
+    "/api/equipment/{id:guid}",
+    async (
+        Guid id,
+        UpdateEquipmentRequest request,
+        IEquipmentService equipmentService,
+        CancellationToken cancellationToken) =>
+    {
+        var equipment =
+            await equipmentService.UpdateAsync(
+                new UpdateEquipmentCommand(
+                    id,
+                    request.AssetTag,
+                    request.Name,
+                    request.CategoryId),
+                cancellationToken);
+
+        if (equipment is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(
+            equipment);
+    });
+
 app.Run();
 
 public partial class Program

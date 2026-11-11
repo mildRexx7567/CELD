@@ -171,4 +171,66 @@ public sealed class EfEquipmentService
         .ToListAsync(cancellationToken);
 }
 
+public async Task<EquipmentDetail>
+    CreateAsync(
+        CreateEquipmentCommand command,
+        CancellationToken cancellationToken = default)
+{
+    var equipment = new EquipmentItem(
+        Guid.NewGuid(),
+        command.AssetTag,
+        command.Name,
+        command.CategoryId);
+
+    _db.EquipmentItems.Add(
+        equipment);
+
+    await _db.SaveChangesAsync(
+        cancellationToken);
+
+    return new EquipmentDetail(
+        equipment.Id,
+        equipment.AssetTag,
+        equipment.Name,
+        equipment.CategoryId);
+}
+
+public async Task<EquipmentDetail?>
+    UpdateAsync(
+        UpdateEquipmentCommand command,
+        CancellationToken cancellationToken = default)
+{
+    var equipment =
+        await _db.EquipmentItems
+            .FirstOrDefaultAsync(
+                x => x.Id == command.EquipmentId,
+                cancellationToken);
+
+    if (equipment is null)
+    {
+        return null;
+    }
+
+    typeof(EquipmentItem)
+        .GetProperty(nameof(EquipmentItem.AssetTag))!
+        .SetValue(equipment, command.AssetTag);
+
+    typeof(EquipmentItem)
+        .GetProperty(nameof(EquipmentItem.Name))!
+        .SetValue(equipment, command.Name);
+
+    typeof(EquipmentItem)
+        .GetProperty(nameof(EquipmentItem.CategoryId))!
+        .SetValue(equipment, command.CategoryId);
+
+    await _db.SaveChangesAsync(
+        cancellationToken);
+
+    return new EquipmentDetail(
+        equipment.Id,
+        equipment.AssetTag,
+        equipment.Name,
+        equipment.CategoryId);
+}
+
 }
