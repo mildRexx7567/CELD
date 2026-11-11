@@ -20,4 +20,14 @@ public interface IEquipmentService
     GetAsync(
         Guid equipmentId,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<EquipmentLendingHistoryItem>>
+    GetLendingHistoryAsync(
+        Guid equipmentItemId,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<EquipmentReservationHistoryItem>>
+    GetReservationHistoryAsync(
+        Guid equipmentItemId,
+        CancellationToken cancellationToken = default); 
 }

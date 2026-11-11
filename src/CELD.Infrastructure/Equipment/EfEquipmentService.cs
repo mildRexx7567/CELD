@@ -1,4 +1,5 @@
 using CELD.Application.Equipment;
+using CELD.Application.Lending;
 using CELD.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -84,8 +85,10 @@ public sealed class EfEquipmentService
     {
         var checkedOutEquipment =
             await _db.LendingTransactions
-                .Where(x => x.ReturnedUtc == null)
-                .Select(x => x.EquipmentItemId)
+                .Where(
+                    x => x.ReturnedUtc == null)
+                .Select(
+                    x => x.EquipmentItemId)
                 .ToListAsync(cancellationToken);
 
         return await _db.EquipmentItems
@@ -94,7 +97,8 @@ public sealed class EfEquipmentService
                     x.Id,
                     x.AssetTag,
                     x.Name,
-                    !checkedOutEquipment.Contains(x.Id)))
+                    !checkedOutEquipment.Contains(
+                        x.Id)))
             .ToListAsync(cancellationToken);
     }
 
@@ -122,7 +126,49 @@ public sealed class EfEquipmentService
                     x.Id,
                     x.AssetTag,
                     x.Name,
-                    !reservedEquipment.Contains(x.Id)))
+                    !reservedEquipment.Contains(
+                        x.Id)))
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<EquipmentLendingHistoryItem>>
+        GetLendingHistoryAsync(
+            Guid equipmentItemId,
+            CancellationToken cancellationToken = default)
+    {
+        return await _db.LendingTransactions
+            .Where(
+                x => x.EquipmentItemId ==
+                     equipmentItemId)
+            .OrderByDescending(
+                x => x.CheckedOutUtc)
+            .Select(
+                x => new EquipmentLendingHistoryItem(
+                    x.Id,
+                    x.StudentNumber,
+                    x.CheckedOutUtc,
+                    x.ReturnedUtc))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<EquipmentReservationHistoryItem>>
+    GetReservationHistoryAsync(
+        Guid equipmentItemId,
+        CancellationToken cancellationToken = default)
+{
+    return await _db.Reservations
+        .Where(
+            x => x.EquipmentItemId ==
+                 equipmentItemId)
+        .OrderByDescending(
+            x => x.ReservedFromUtc)
+        .Select(
+            x => new EquipmentReservationHistoryItem(
+                x.Id,
+                x.StudentNumber,
+                x.ReservedFromUtc,
+                x.ReservedUntilUtc))
+        .ToListAsync(cancellationToken);
+}
+
 }

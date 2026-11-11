@@ -361,6 +361,40 @@ app.MapDelete(
             reservations);
     });
     
+app.MapGet(
+    "/api/equipment/{id:guid}/history",
+    async (
+        Guid id,
+        IEquipmentService equipmentService,
+        CancellationToken cancellationToken) =>
+    {
+        var history =
+            await equipmentService
+                .GetLendingHistoryAsync(
+                    id,
+                    cancellationToken);
+
+        return Results.Ok(
+            history);
+    });
+    
+    app.MapGet(
+    "/api/equipment/{id:guid}/reservations",
+    async (
+        Guid id,
+        IEquipmentService equipmentService,
+        CancellationToken cancellationToken) =>
+    {
+        var history =
+            await equipmentService
+                .GetReservationHistoryAsync(
+                    id,
+                    cancellationToken);
+
+        return Results.Ok(
+            history);
+    });
+    
 app.Run();
 
 public partial class Program
