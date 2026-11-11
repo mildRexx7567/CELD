@@ -40,4 +40,10 @@ Task<EquipmentDetail?>
     UpdateAsync(
         UpdateEquipmentCommand command,
         CancellationToken cancellationToken = default);
+
+Task<bool>
+    DeleteAsync(
+        Guid equipmentId,
+        CancellationToken cancellationToken = default);
+        
 }

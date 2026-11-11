@@ -233,4 +233,46 @@ public async Task<EquipmentDetail?>
         equipment.CategoryId);
 }
 
+public async Task<bool>
+    DeleteAsync(
+        Guid equipmentId,
+        CancellationToken cancellationToken = default)
+{
+    var equipment =
+        await _db.EquipmentItems
+            .FirstOrDefaultAsync(
+                x => x.Id == equipmentId,
+                cancellationToken);
+
+    if (equipment is null)
+    {
+        return false;
+    }
+
+    var hasReservations =
+        await _db.Reservations.AnyAsync(
+            x => x.EquipmentItemId == equipmentId,
+            cancellationToken);
+
+    var hasOpenLoans =
+        await _db.LendingTransactions.AnyAsync(
+            x => x.EquipmentItemId == equipmentId &&
+                 x.ReturnedUtc == null,
+            cancellationToken);
+
+    if (hasReservations || hasOpenLoans)
+    {
+        throw new InvalidOperationException(
+            "Equipment cannot be deleted while reserved or checked out.");
+    }
+
+    _db.EquipmentItems.Remove(
+        equipment);
+
+    await _db.SaveChangesAsync(
+        cancellationToken);
+
+    return true;
+}
+
 }

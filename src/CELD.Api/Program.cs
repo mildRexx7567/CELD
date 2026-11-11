@@ -441,6 +441,26 @@ app.MapPatch(
             equipment);
     });
 
+app.MapDelete(
+    "/api/equipment/{id:guid}",
+    async (
+        Guid id,
+        IEquipmentService equipmentService,
+        CancellationToken cancellationToken) =>
+    {
+        var removed =
+            await equipmentService.DeleteAsync(
+                id,
+                cancellationToken);
+
+        if (!removed)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.NoContent();
+    });
+    
 app.Run();
 
 public partial class Program
