@@ -60,24 +60,69 @@ public sealed class EfEquipmentService
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<EquipmentDetail?>
+        GetAsync(
+            Guid equipmentId,
+            CancellationToken cancellationToken = default)
+    {
+        return await _db.EquipmentItems
+            .Where(
+                x => x.Id == equipmentId)
+            .Select(
+                x => new EquipmentDetail(
+                    x.Id,
+                    x.AssetTag,
+                    x.Name,
+                    x.CategoryId))
+            .FirstOrDefaultAsync(
+                cancellationToken);
+    }
+
     public async Task<IReadOnlyList<EquipmentAvailabilityView>>
-    ListAvailabilityAsync(
-        CancellationToken cancellationToken = default)
-{
-    var checkedOutEquipment =
-        await _db.LendingTransactions
-            .Where(x => x.ReturnedUtc == null)
-            .Select(x => x.EquipmentItemId)
+        ListAvailabilityAsync(
+            CancellationToken cancellationToken = default)
+    {
+        var checkedOutEquipment =
+            await _db.LendingTransactions
+                .Where(x => x.ReturnedUtc == null)
+                .Select(x => x.EquipmentItemId)
+                .ToListAsync(cancellationToken);
+
+        return await _db.EquipmentItems
+            .Select(
+                x => new EquipmentAvailabilityView(
+                    x.Id,
+                    x.AssetTag,
+                    x.Name,
+                    !checkedOutEquipment.Contains(x.Id)))
             .ToListAsync(cancellationToken);
+    }
 
-    return await _db.EquipmentItems
-        .Select(x =>
-            new EquipmentAvailabilityView(
-                x.Id,
-                x.AssetTag,
-                x.Name,
-                !checkedOutEquipment.Contains(x.Id)))
-        .ToListAsync(cancellationToken);
-}
+    public async Task<IReadOnlyList<EquipmentAvailabilityView>>
+        ListAvailabilityAsync(
+            EquipmentAvailabilityRangeFilter filter,
+            CancellationToken cancellationToken = default)
+    {
+        var reservedEquipment =
+            await _db.Reservations
+                .Where(
+                    x =>
+                        filter.ReservedFromUtc <
+                        x.ReservedUntilUtc &&
+                        filter.ReservedUntilUtc >
+                        x.ReservedFromUtc)
+                .Select(
+                    x => x.EquipmentItemId)
+                .Distinct()
+                .ToListAsync(cancellationToken);
 
+        return await _db.EquipmentItems
+            .Select(
+                x => new EquipmentAvailabilityView(
+                    x.Id,
+                    x.AssetTag,
+                    x.Name,
+                    !reservedEquipment.Contains(x.Id)))
+            .ToListAsync(cancellationToken);
+    }
 }

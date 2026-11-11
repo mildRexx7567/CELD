@@ -10,4 +10,14 @@ public interface IEquipmentService
     Task<IReadOnlyList<EquipmentAvailabilityView>>
     ListAvailabilityAsync(
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<EquipmentAvailabilityView>>
+    ListAvailabilityAsync(
+        EquipmentAvailabilityRangeFilter filter,
+        CancellationToken cancellationToken = default);
+
+    Task<EquipmentDetail?>
+    GetAsync(
+        Guid equipmentId,
+        CancellationToken cancellationToken = default);
 }

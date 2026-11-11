@@ -77,6 +77,26 @@ app.MapGet(
     });
 
 app.MapGet(
+    "/api/equipment/{id:guid}",
+    async (
+        Guid id,
+        IEquipmentService equipmentService,
+        CancellationToken cancellationToken) =>
+    {
+        var equipment =
+            await equipmentService.GetAsync(
+                id,
+                cancellationToken);
+
+        if (equipment is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(equipment);
+    });
+
+app.MapGet(
     "/api/students",
     async (
         IStudentService studentService,
@@ -126,11 +146,16 @@ app.MapPost(
 app.MapGet(
     "/api/reservations",
     async (
+        Guid? equipmentItemId,
+        string? studentNumber,
         IReservationService reservationService,
         CancellationToken cancellationToken) =>
     {
         var reservations =
             await reservationService.ListAsync(
+                new ReservationSearchFilter(
+                    equipmentItemId,
+                    studentNumber),
                 cancellationToken);
 
         return Results.Ok(
@@ -141,6 +166,32 @@ app.MapGet(
                     x.StudentNumber,
                     x.ReservedFromUtc,
                     x.ReservedUntilUtc)));
+    });
+
+app.MapGet(
+    "/api/reservations/{id:guid}",
+    async (
+        Guid id,
+        IReservationService reservationService,
+        CancellationToken cancellationToken) =>
+    {
+        var reservation =
+            await reservationService.GetAsync(
+                id,
+                cancellationToken);
+
+        if (reservation is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(
+            new ReservationResponse(
+                reservation.Id,
+                reservation.EquipmentItemId,
+                reservation.StudentNumber,
+                reservation.ReservedFromUtc,
+                reservation.ReservedUntilUtc));
     });
 
 app.MapPost(
@@ -250,6 +301,64 @@ app.MapGet(
                     cancellationToken);
 
         return Results.Ok(availability);
+    });
+    
+app.MapGet(
+    "/api/equipment/availability-range",
+    async (
+        DateTime from,
+        DateTime until,
+        IEquipmentService equipmentService,
+        CancellationToken cancellationToken) =>
+    {
+        var availability =
+            await equipmentService
+                .ListAvailabilityAsync(
+                    new EquipmentAvailabilityRangeFilter(
+                        from,
+                        until),
+                    cancellationToken);
+
+        return Results.Ok(
+            availability);
+    });
+
+app.MapDelete(
+    "/api/reservations/{id:guid}",
+    async (
+        Guid id,
+        IReservationService reservationService,
+        CancellationToken cancellationToken) =>
+    {
+        var removed =
+            await reservationService.CancelAsync(
+                new CancelReservationCommand(
+                    id),
+                cancellationToken);
+
+        if (!removed)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.NoContent();
+    });
+
+    app.MapGet(
+    "/api/students/{studentNumber}/reservations",
+    async (
+        string studentNumber,
+        IReservationService reservationService,
+        CancellationToken cancellationToken) =>
+    {
+        var reservations =
+            await reservationService
+                .ListForStudentAsync(
+                    studentNumber,
+                    cancellationToken);
+
+        return Results.Ok(
+            reservations);
     });
     
 app.Run();
