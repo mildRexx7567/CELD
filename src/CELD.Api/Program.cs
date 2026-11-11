@@ -5,6 +5,12 @@ using CELD.Infrastructure.Equipment;
 using CELD.Application.Lending;
 using CELD.Infrastructure.Lending;
 using CELD.Api.Contracts.Students;
+using CELD.Infrastructure.Lending;
+using CELD.Application.Lending;
+using CELD.Api.Contracts.Reservations;
+using CELD.Infrastructure.Lending;
+using CELD.Api.Contracts.Lending;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +34,14 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IStudentService,
     EfStudentService>();
+
+builder.Services.AddScoped<
+    IReservationService,
+    EfReservationService>();
+
+builder.Services.AddScoped<
+    ILendingService,
+    EfLendingService>();
 
 var app = builder.Build();
 
@@ -105,6 +119,120 @@ app.MapGet(
                 student.Email));
     });
 
+app.MapGet(
+    "/api/reservations",
+    async (
+        IReservationService reservationService,
+        CancellationToken cancellationToken) =>
+    {
+        var reservations =
+            await reservationService.ListAsync(
+                cancellationToken);
+
+        return Results.Ok(
+            reservations.Select(
+                x => new ReservationResponse(
+                    x.Id,
+                    x.EquipmentItemId,
+                    x.StudentNumber,
+                    x.ReservedFromUtc,
+                    x.ReservedUntilUtc)));
+    });
+app.MapPost(
+    "/api/reservations",
+    async (
+        CreateReservationRequest request,
+        IReservationService reservationService,
+        CancellationToken cancellationToken) =>
+    {
+        var reservation =
+            await reservationService.CreateAsync(
+                new CreateReservationCommand(
+                    request.EquipmentItemId,
+                    request.StudentNumber,
+                    request.ReservedFromUtc,
+                    request.ReservedUntilUtc),
+                cancellationToken);
+
+        return Results.Ok(
+            new ReservationResponse(
+                reservation.Id,
+                reservation.EquipmentItemId,
+                reservation.StudentNumber,
+                reservation.ReservedFromUtc,
+                reservation.ReservedUntilUtc));
+    });
+
+app.MapGet(
+    "/api/lending",
+    async (
+        ILendingService lendingService,
+        CancellationToken cancellationToken) =>
+    {
+        var transactions =
+            await lendingService.ListAsync(
+                cancellationToken);
+
+        return Results.Ok(
+            transactions.Select(
+                x => new LendingTransactionResponse(
+                    x.Id,
+                    x.EquipmentItemId,
+                    x.StudentNumber,
+                    x.CheckedOutUtc,
+                    x.ReturnedUtc)));
+    });
+
+app.MapPost(
+    "/api/lending/checkout",
+    async (
+        CheckoutEquipmentRequest request,
+        ILendingService lendingService,
+        CancellationToken cancellationToken) =>
+    {
+        var transaction =
+            await lendingService.CheckoutAsync(
+                new CheckoutEquipmentCommand(
+                    request.EquipmentItemId,
+                    request.StudentNumber),
+                cancellationToken);
+
+        return Results.Ok(
+            new LendingTransactionResponse(
+                transaction.Id,
+                transaction.EquipmentItemId,
+                transaction.StudentNumber,
+                transaction.CheckedOutUtc,
+                transaction.ReturnedUtc));
+    });
+
+app.MapPost(
+    "/api/lending/{id:guid}/return",
+    async (
+        Guid id,
+        ILendingService lendingService,
+        CancellationToken cancellationToken) =>
+    {
+        var transaction =
+            await lendingService.ReturnAsync(
+                new ReturnEquipmentCommand(
+                    id),
+                cancellationToken);
+
+        if (transaction is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(
+            new LendingTransactionResponse(
+                transaction.Id,
+                transaction.EquipmentItemId,
+                transaction.StudentNumber,
+                transaction.CheckedOutUtc,
+                transaction.ReturnedUtc));
+    });
+    
 app.Run();
 
 public partial class Program
