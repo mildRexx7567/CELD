@@ -47,6 +47,14 @@ export default function LendingPage() {
     const returnEquipment = async (
         id: string
     ) => {
+        if (
+            !window.confirm(
+                "Return this equipment?"
+            )
+        ) {
+            return;
+        }
+
         await celdApi.post(
             `/lending/${id}/return`
         );
@@ -56,7 +64,7 @@ export default function LendingPage() {
 
     return (
         <div className="container mt-4">
-            <h1>Lending</h1>
+            <h1>Lending Management</h1>
 
             <div className="card p-3 mb-4">
                 <h3>Checkout Equipment</h3>
@@ -67,7 +75,9 @@ export default function LendingPage() {
                     value={equipmentItemId}
                     onChange={e =>
                         setEquipmentItemId(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <input
@@ -76,13 +86,16 @@ export default function LendingPage() {
                     value={studentNumber}
                     onChange={e =>
                         setStudentNumber(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <button
                     className="btn btn-success"
-                    onClick={checkoutEquipment}>
-                    Checkout
+                    onClick={checkoutEquipment}
+                >
+                    Checkout Equipment
                 </button>
             </div>
 
@@ -92,21 +105,38 @@ export default function LendingPage() {
                         <th>Student</th>
                         <th>Equipment</th>
                         <th>Checked Out</th>
-                        <th>Returned</th>
-                        <th>Action</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {transactions.map(t => (
                         <tr key={t.id}>
-                            <td>{t.studentNumber}</td>
-                            <td>{t.equipmentItemId}</td>
-                            <td>{t.checkedOutUtc}</td>
                             <td>
-                                {t.returnedUtc ??
-                                    "Active"}
+                                {t.studentNumber}
                             </td>
+
+                            <td>
+                                {t.equipmentItemId}
+                            </td>
+
+                            <td>
+                                {t.checkedOutUtc}
+                            </td>
+
+                            <td>
+                                {t.returnedUtc ? (
+                                    <span className="badge bg-success">
+                                        Returned
+                                    </span>
+                                ) : (
+                                    <span className="badge bg-warning text-dark">
+                                        Active
+                                    </span>
+                                )}
+                            </td>
+
                             <td>
                                 {!t.returnedUtc && (
                                     <button

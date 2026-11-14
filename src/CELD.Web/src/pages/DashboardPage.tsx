@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { celdApi } from "../api/celdApi";
 
+import {
+    FaLaptop,
+    FaUsers,
+    FaCalendarCheck,
+    FaExchangeAlt
+} from "react-icons/fa";
+
 export default function DashboardPage() {
     const [equipmentCount, setEquipmentCount] =
         useState(0);
@@ -45,8 +52,10 @@ export default function DashboardPage() {
             <div className="row">
                 <div className="col-md-3 mb-3">
                     <div className="card text-bg-primary shadow">
-                        <div className="card-body">
-                            <h5 className="card-title">
+                        <div className="card-body text-center">
+                            <FaLaptop size={40} />
+
+                            <h5 className="mt-3">
                                 Equipment
                             </h5>
 
@@ -59,8 +68,10 @@ export default function DashboardPage() {
 
                 <div className="col-md-3 mb-3">
                     <div className="card text-bg-success shadow">
-                        <div className="card-body">
-                            <h5 className="card-title">
+                        <div className="card-body text-center">
+                            <FaUsers size={40} />
+
+                            <h5 className="mt-3">
                                 Students
                             </h5>
 
@@ -73,8 +84,10 @@ export default function DashboardPage() {
 
                 <div className="col-md-3 mb-3">
                     <div className="card text-bg-warning shadow">
-                        <div className="card-body">
-                            <h5 className="card-title">
+                        <div className="card-body text-center">
+                            <FaCalendarCheck size={40} />
+
+                            <h5 className="mt-3">
                                 Reservations
                             </h5>
 
@@ -87,8 +100,10 @@ export default function DashboardPage() {
 
                 <div className="col-md-3 mb-3">
                     <div className="card text-bg-danger shadow">
-                        <div className="card-body">
-                            <h5 className="card-title">
+                        <div className="card-body text-center">
+                            <FaExchangeAlt size={40} />
+
+                            <h5 className="mt-3">
                                 Lending
                             </h5>
 
@@ -100,20 +115,17 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            <div className="card mt-4 shadow">
+            <div className="card shadow mt-4">
                 <div className="card-body">
                     <h3>
                         Campus Equipment Lending Desk
                     </h3>
 
-                    <p className="mb-0">
-                        Manage equipment,
-                        students,
-                        reservations,
-                        checkouts,
-                        returns and
-                        lending activity
-                        from a single dashboard.
+                    <p>
+                        Manage equipment, students,
+                        reservations, lending activity,
+                        checkouts and returns from a
+                        single application.
                     </p>
                 </div>
             </div>

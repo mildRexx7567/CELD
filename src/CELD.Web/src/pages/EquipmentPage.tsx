@@ -33,27 +33,52 @@ export default function EquipmentPage() {
     }, []);
 
     const createEquipment = async () => {
-        await celdApi.post(
-            "/equipment",
-            {
-                assetTag,
-                name,
-                categoryId
-            });
+        try {
+            await celdApi.post(
+                "/equipment",
+                {
+                    assetTag,
+                    name,
+                    categoryId
+                });
 
-        setAssetTag("");
-        setName("");
-        setCategoryId("");
+            setAssetTag("");
+            setName("");
+            setCategoryId("");
 
-        loadEquipment();
+            loadEquipment();
+        }
+        catch {
+            alert(
+                "Unable to create equipment."
+            );
+        }
+    };
+
+    const deleteEquipment = async (
+        id: string
+    ) => {
+        try {
+            await celdApi.delete(
+                `/equipment/${id}`);
+
+            loadEquipment();
+        }
+        catch {
+            alert(
+                "Equipment cannot be deleted because it has reservations or lending history."
+            );
+        }
     };
 
     return (
         <div className="container mt-4">
             <h1>Equipment Catalog</h1>
 
-            <div className="card p-3 mb-4">
-                <h3>Create Equipment</h3>
+            <div className="card shadow p-3 mb-4">
+                <h3 className="mb-3">
+                    Create Equipment
+                </h3>
 
                 <input
                     className="form-control mb-2"
@@ -61,7 +86,9 @@ export default function EquipmentPage() {
                     value={assetTag}
                     onChange={e =>
                         setAssetTag(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <input
@@ -70,44 +97,95 @@ export default function EquipmentPage() {
                     value={name}
                     onChange={e =>
                         setName(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <input
-                    className="form-control mb-2"
+                    className="form-control mb-3"
                     placeholder="Category Id"
                     value={categoryId}
                     onChange={e =>
                         setCategoryId(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <button
-                    className="btn btn-primary"
-                    onClick={createEquipment}>
+                    className="btn btn-success"
+                    onClick={createEquipment}
+                >
                     Create Equipment
                 </button>
             </div>
 
-            <table className="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Asset Tag</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                    </tr>
-                </thead>
+            <div className="card shadow">
+                <div className="card-body">
+                    <h3>Equipment Inventory</h3>
 
-                <tbody>
-                    {equipment.map(item => (
-                        <tr key={item.id}>
-                            <td>{item.assetTag}</td>
-                            <td>{item.name}</td>
-                            <td>{item.categoryId}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                    <table className="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Asset Tag</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {equipment.map(item => (
+                                <tr key={item.id}>
+                                    <td>
+                                        <strong>
+                                            {item.assetTag}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {item.name}
+                                    </td>
+
+                                    <td>
+                                        {item.categoryId ===
+                                        "11111111-1111-1111-1111-111111111111" ? (
+                                            <span className="badge bg-primary">
+                                                Laptop
+                                            </span>
+                                        ) : (
+                                            <span className="badge bg-success">
+                                                Camera
+                                            </span>
+                                        )}
+                                    </td>
+
+                                    <td>
+                                        <button
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() => {
+                                                if (
+                                                    window.confirm(
+                                                        "Delete this equipment?"
+                                                    )
+                                                ) {
+                                                    deleteEquipment(
+                                                        item.id
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
         </div>
     );
 }

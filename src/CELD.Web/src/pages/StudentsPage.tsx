@@ -57,8 +57,10 @@ export default function StudentsPage() {
         <div className="container mt-4">
             <h1>Students</h1>
 
-            <div className="card p-3 mb-4">
-                <h3>Create Student</h3>
+            <div className="card shadow p-3 mb-4">
+                <h3 className="mb-3">
+                    Create Student
+                </h3>
 
                 <input
                     className="form-control mb-2"
@@ -66,7 +68,9 @@ export default function StudentsPage() {
                     value={studentNumber}
                     onChange={e =>
                         setStudentNumber(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <input
@@ -75,7 +79,9 @@ export default function StudentsPage() {
                     value={firstName}
                     onChange={e =>
                         setFirstName(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <input
@@ -84,47 +90,78 @@ export default function StudentsPage() {
                     value={lastName}
                     onChange={e =>
                         setLastName(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <input
-                    className="form-control mb-2"
+                    className="form-control mb-3"
                     placeholder="Email"
                     value={email}
                     onChange={e =>
                         setEmail(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <button
-                    className="btn btn-primary"
-                    onClick={createStudent}>
+                    className="btn btn-success"
+                    onClick={createStudent}
+                >
                     Create Student
                 </button>
             </div>
 
-            <table className="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Student Number</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                    </tr>
-                </thead>
+            <div className="card shadow">
+                <div className="card-body">
+                    <h3>Student Directory</h3>
 
-                <tbody>
-                    {students.map(student => (
-                        <tr key={student.studentNumber}>
-                            <td>{student.studentNumber}</td>
-                            <td>
-                                {student.firstName}{" "}
-                                {student.lastName}
-                            </td>
-                            <td>{student.email}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                    <table className="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student Number</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {students.map(student => (
+                                <tr
+                                    key={
+                                        student.studentNumber
+                                    }
+                                >
+                                    <td>
+                                        <span className="badge bg-primary">
+                                            {
+                                                student.studentNumber
+                                            }
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {
+                                                student.firstName
+                                            }
+                                        </strong>{" "}
+                                        {
+                                            student.lastName
+                                        }
+                                    </td>
+
+                                    <td>
+                                        {student.email}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     );
 }

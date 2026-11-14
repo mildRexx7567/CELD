@@ -10,6 +10,7 @@ import EquipmentPage from "./pages/EquipmentPage";
 import StudentsPage from "./pages/StudentsPage";
 import ReservationsPage from "./pages/ReservationsPage";
 import LendingPage from "./pages/LendingPage";
+import Navbar from "./components/Navbar";
 
 export default function App() {
     return (
@@ -20,6 +21,7 @@ export default function App() {
                 <Link to="/students">Students</Link>{" | "}
                 <Link to="/reservations">Reservations</Link>{" | "}
                 <Link to="/lending">Lending</Link>
+                <Navbar />
             </nav>
 
             <Routes>

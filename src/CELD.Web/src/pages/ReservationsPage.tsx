@@ -54,6 +54,23 @@ export default function ReservationsPage() {
         loadReservations();
     };
 
+    const cancelReservation = async (
+        id: string
+    ) => {
+        if (
+            !window.confirm(
+                "Cancel this reservation?"
+            )
+        ) {
+            return;
+        }
+
+        await celdApi.delete(
+            `/reservations/${id}`);
+
+        loadReservations();
+    };
+
     return (
         <div className="container mt-4">
             <h1>Reservations</h1>
@@ -67,7 +84,9 @@ export default function ReservationsPage() {
                     value={equipmentItemId}
                     onChange={e =>
                         setEquipmentItemId(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <input
@@ -76,7 +95,9 @@ export default function ReservationsPage() {
                     value={studentNumber}
                     onChange={e =>
                         setStudentNumber(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <input
@@ -85,7 +106,9 @@ export default function ReservationsPage() {
                     value={reservedFromUtc}
                     onChange={e =>
                         setReservedFromUtc(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <input
@@ -94,12 +117,15 @@ export default function ReservationsPage() {
                     value={reservedUntilUtc}
                     onChange={e =>
                         setReservedUntilUtc(
-                            e.target.value)}
+                            e.target.value
+                        )
+                    }
                 />
 
                 <button
                     className="btn btn-primary"
-                    onClick={createReservation}>
+                    onClick={createReservation}
+                >
                     Create Reservation
                 </button>
             </div>
@@ -111,16 +137,41 @@ export default function ReservationsPage() {
                         <th>Equipment</th>
                         <th>From</th>
                         <th>Until</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {reservations.map(r => (
                         <tr key={r.id}>
-                            <td>{r.studentNumber}</td>
-                            <td>{r.equipmentItemId}</td>
-                            <td>{r.reservedFromUtc}</td>
-                            <td>{r.reservedUntilUtc}</td>
+                            <td>
+                                {r.studentNumber}
+                            </td>
+
+                            <td>
+                                {r.equipmentItemId}
+                            </td>
+
+                            <td>
+                                {r.reservedFromUtc}
+                            </td>
+
+                            <td>
+                                {r.reservedUntilUtc}
+                            </td>
+
+                            <td>
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() =>
+                                        cancelReservation(
+                                            r.id
+                                        )
+                                    }
+                                >
+                                    Cancel
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
