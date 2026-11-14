@@ -11,6 +11,17 @@ using CELD.Api.Contracts.Equipment;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin();
+    });
+});
+
 var connectionString =
     builder.Configuration.GetConnectionString("CELD");
 
@@ -41,6 +52,8 @@ builder.Services.AddScoped<
     EfLendingService>();
 
 var app = builder.Build();
+
+app.UseCors();
 
 app.MapGet(
     "/api/status",
