@@ -37,21 +37,28 @@ export default function ReservationsPage() {
     }, []);
 
     const createReservation = async () => {
-        await celdApi.post(
-            "/reservations",
-            {
-                equipmentItemId,
-                studentNumber,
-                reservedFromUtc,
-                reservedUntilUtc
-            });
+        try {
+            await celdApi.post(
+                "/reservations",
+                {
+                    equipmentItemId,
+                    studentNumber,
+                    reservedFromUtc,
+                    reservedUntilUtc
+                });
 
-        setEquipmentItemId("");
-        setStudentNumber("");
-        setReservedFromUtc("");
-        setReservedUntilUtc("");
+            setEquipmentItemId("");
+            setStudentNumber("");
+            setReservedFromUtc("");
+            setReservedUntilUtc("");
 
-        loadReservations();
+            loadReservations();
+        }
+        catch {
+            alert(
+                "Unable to create reservation."
+            );
+        }
     };
 
     const cancelReservation = async (
@@ -75,7 +82,7 @@ export default function ReservationsPage() {
         <div className="container mt-4">
             <h1>Reservations</h1>
 
-            <div className="card p-3 mb-4">
+            <div className="card shadow p-3 mb-4">
                 <h3>Create Reservation</h3>
 
                 <input
@@ -113,7 +120,7 @@ export default function ReservationsPage() {
 
                 <input
                     type="datetime-local"
-                    className="form-control mb-2"
+                    className="form-control mb-3"
                     value={reservedUntilUtc}
                     onChange={e =>
                         setReservedUntilUtc(
@@ -123,59 +130,72 @@ export default function ReservationsPage() {
                 />
 
                 <button
-                    className="btn btn-primary"
+                    className="btn btn-success"
                     onClick={createReservation}
                 >
                     Create Reservation
                 </button>
             </div>
 
-            <table className="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Student</th>
-                        <th>Equipment</th>
-                        <th>From</th>
-                        <th>Until</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+            <div className="card shadow">
+                <div className="card-body">
+                    <h3>Reservation History</h3>
 
-                <tbody>
-                    {reservations.map(r => (
-                        <tr key={r.id}>
-                            <td>
-                                {r.studentNumber}
-                            </td>
+                    <table className="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Equipment</th>
+                                <th>From</th>
+                                <th>Until</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
 
-                            <td>
-                                {r.equipmentItemId}
-                            </td>
+                        <tbody>
+                            {reservations.map(r => (
+                                <tr key={r.id}>
+                                    <td>
+                                        <span className="badge bg-primary">
+                                            {r.studentNumber}
+                                        </span>
+                                    </td>
 
-                            <td>
-                                {r.reservedFromUtc}
-                            </td>
+                                    <td>
+                                        {r.equipmentItemId}
+                                    </td>
 
-                            <td>
-                                {r.reservedUntilUtc}
-                            </td>
+                                    <td>
+                                        {new Date(
+                                            r.reservedFromUtc
+                                        ).toLocaleString()}
+                                    </td>
 
-                            <td>
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() =>
-                                        cancelReservation(
-                                            r.id
-                                        )
-                                    }
-                                >
-                                    Cancel
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                                    <td>
+                                        {new Date(
+                                            r.reservedUntilUtc
+                                        ).toLocaleString()}
+                                    </td>
+
+                                    <td>
+                                        <button
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() =>
+                                                cancelReservation(
+                                                    r.id
+                                                )
+                                            }
+                                        >
+                                            Cancel
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
         </div>
     );
 }

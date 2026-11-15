@@ -31,17 +31,24 @@ export default function LendingPage() {
     }, []);
 
     const checkoutEquipment = async () => {
-        await celdApi.post(
-            "/lending/checkout",
-            {
-                equipmentItemId,
-                studentNumber
-            });
+        try {
+            await celdApi.post(
+                "/lending/checkout",
+                {
+                    equipmentItemId,
+                    studentNumber
+                });
 
-        setEquipmentItemId("");
-        setStudentNumber("");
+            setEquipmentItemId("");
+            setStudentNumber("");
 
-        loadTransactions();
+            loadTransactions();
+        }
+        catch {
+            alert(
+                "Unable to checkout equipment."
+            );
+        }
     };
 
     const returnEquipment = async (
@@ -66,7 +73,7 @@ export default function LendingPage() {
         <div className="container mt-4">
             <h1>Lending Management</h1>
 
-            <div className="card p-3 mb-4">
+            <div className="card shadow p-3 mb-4">
                 <h3>Checkout Equipment</h3>
 
                 <input
@@ -81,7 +88,7 @@ export default function LendingPage() {
                 />
 
                 <input
-                    className="form-control mb-2"
+                    className="form-control mb-3"
                     placeholder="Student Number"
                     value={studentNumber}
                     onChange={e =>
@@ -99,62 +106,73 @@ export default function LendingPage() {
                 </button>
             </div>
 
-            <table className="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Student</th>
-                        <th>Equipment</th>
-                        <th>Checked Out</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+            <div className="card shadow">
+                <div className="card-body">
+                    <h3>Lending Transactions</h3>
 
-                <tbody>
-                    {transactions.map(t => (
-                        <tr key={t.id}>
-                            <td>
-                                {t.studentNumber}
-                            </td>
+                    <table className="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Equipment</th>
+                                <th>Checked Out</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
 
-                            <td>
-                                {t.equipmentItemId}
-                            </td>
+                        <tbody>
+                            {transactions.map(t => (
+                                <tr key={t.id}>
+                                    <td>
+                                        <span className="badge bg-primary">
+                                            {t.studentNumber}
+                                        </span>
+                                    </td>
 
-                            <td>
-                                {t.checkedOutUtc}
-                            </td>
+                                    <td>
+                                        {t.equipmentItemId}
+                                    </td>
 
-                            <td>
-                                {t.returnedUtc ? (
-                                    <span className="badge bg-success">
-                                        Returned
-                                    </span>
-                                ) : (
-                                    <span className="badge bg-warning text-dark">
-                                        Active
-                                    </span>
-                                )}
-                            </td>
+                                    <td>
+                                        {new Date(
+                                            t.checkedOutUtc
+                                        ).toLocaleString()}
+                                    </td>
 
-                            <td>
-                                {!t.returnedUtc && (
-                                    <button
-                                        className="btn btn-warning btn-sm"
-                                        onClick={() =>
-                                            returnEquipment(
-                                                t.id
-                                            )
-                                        }
-                                    >
-                                        Return
-                                    </button>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                                    <td>
+                                        {t.returnedUtc ? (
+                                            <span className="badge bg-success">
+                                                Returned
+                                            </span>
+                                        ) : (
+                                            <span className="badge bg-warning text-dark">
+                                                Active
+                                            </span>
+                                        )}
+                                    </td>
+
+                                    <td>
+                                        {!t.returnedUtc && (
+                                            <button
+                                                className="btn btn-warning btn-sm"
+                                                onClick={() =>
+                                                    returnEquipment(
+                                                        t.id
+                                                    )
+                                                }
+                                            >
+                                                Return
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
         </div>
     );
 }

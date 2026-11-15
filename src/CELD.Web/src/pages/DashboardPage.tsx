@@ -22,36 +22,54 @@ export default function DashboardPage() {
         useState(0);
 
     useEffect(() => {
-        celdApi.get("/equipment")
+        celdApi
+            .get("/equipment")
             .then(r =>
                 setEquipmentCount(
-                    r.data.length));
+                    r.data.length
+                )
+            );
 
-        celdApi.get("/students")
+        celdApi
+            .get("/students")
             .then(r =>
                 setStudentCount(
-                    r.data.length));
+                    r.data.length
+                )
+            );
 
-        celdApi.get("/reservations")
+        celdApi
+            .get("/reservations")
             .then(r =>
                 setReservationCount(
-                    r.data.length));
+                    r.data.length
+                )
+            );
 
-        celdApi.get("/lending")
+        celdApi
+            .get("/lending")
             .then(r =>
                 setLendingCount(
-                    r.data.length));
+                    r.data.length
+                )
+            );
     }, []);
 
     return (
         <div className="container mt-4">
-            <h1 className="mb-4">
-                CELD Dashboard
-            </h1>
+            <div className="mb-4">
+                <h1>
+                    CELD Dashboard
+                </h1>
+
+                <p className="text-muted">
+                    Campus Equipment Lending Desk
+                </p>
+            </div>
 
             <div className="row">
-                <div className="col-md-3 mb-3">
-                    <div className="card text-bg-primary shadow">
+                <div className="col-md-3 mb-4">
+                    <div className="card text-bg-primary shadow-lg">
                         <div className="card-body text-center">
                             <FaLaptop size={40} />
 
@@ -66,8 +84,8 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="col-md-3 mb-3">
-                    <div className="card text-bg-success shadow">
+                <div className="col-md-3 mb-4">
+                    <div className="card text-bg-success shadow-lg">
                         <div className="card-body text-center">
                             <FaUsers size={40} />
 
@@ -82,8 +100,8 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="col-md-3 mb-3">
-                    <div className="card text-bg-warning shadow">
+                <div className="col-md-3 mb-4">
+                    <div className="card text-bg-warning shadow-lg">
                         <div className="card-body text-center">
                             <FaCalendarCheck size={40} />
 
@@ -98,8 +116,8 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="col-md-3 mb-3">
-                    <div className="card text-bg-danger shadow">
+                <div className="col-md-3 mb-4">
+                    <div className="card text-bg-danger shadow-lg">
                         <div className="card-body text-center">
                             <FaExchangeAlt size={40} />
 
@@ -115,20 +133,57 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            <div className="card shadow mt-4">
+            <div className="card shadow-lg">
                 <div className="card-body">
                     <h3>
-                        Campus Equipment Lending Desk
+                        System Overview
                     </h3>
 
                     <p>
-                        Manage equipment, students,
-                        reservations, lending activity,
-                        checkouts and returns from a
-                        single application.
+                        CELD manages equipment inventory,
+                        student records, reservations,
+                        lending transactions, equipment
+                        returns and activity tracking from
+                        a centralized web application.
                     </p>
+
+                    <ul>
+                        <li>
+                            Equipment Management
+                        </li>
+
+                        <li>
+                            Student Management
+                        </li>
+
+                        <li>
+                            Reservation Tracking
+                        </li>
+
+                        <li>
+                            Lending & Returns
+                        </li>
+
+                        <li>
+                            Activity History
+                        </li>
+                    </ul>
                 </div>
             </div>
+
+            <footer className="mt-5 text-center text-muted">
+                <hr />
+
+                <p>
+                    Campus Equipment Lending Desk
+                    (CELD)
+                </p>
+
+                <p>
+                    React + ASP.NET Core + EF Core +
+                    SQL Server
+                </p>
+            </footer>
         </div>
     );
 }
