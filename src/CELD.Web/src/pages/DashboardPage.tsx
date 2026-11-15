@@ -21,38 +21,76 @@ export default function DashboardPage() {
     const [lendingCount, setLendingCount] =
         useState(0);
 
+    const [availableEquipment, setAvailableEquipment] =
+        useState(0);
+
+    const [activeLoans, setActiveLoans] =
+        useState(0);
+
+    const [recentReservations, setRecentReservations] =
+        useState<any[]>([]);
+
+    const [recentLoans, setRecentLoans] =
+        useState<any[]>([]);
+
     useEffect(() => {
         celdApi
             .get("/equipment")
-            .then(r =>
+            .then(response => {
                 setEquipmentCount(
-                    r.data.length
-                )
-            );
+                    response.data.length
+                );
+            });
 
         celdApi
             .get("/students")
-            .then(r =>
+            .then(response => {
                 setStudentCount(
-                    r.data.length
-                )
-            );
+                    response.data.length
+                );
+            });
 
         celdApi
             .get("/reservations")
-            .then(r =>
+            .then(response => {
                 setReservationCount(
-                    r.data.length
-                )
-            );
+                    response.data.length
+                );
+
+                setRecentReservations(
+                    response.data.slice(0, 5)
+                );
+            });
 
         celdApi
             .get("/lending")
-            .then(r =>
+            .then(response => {
                 setLendingCount(
-                    r.data.length
-                )
-            );
+                    response.data.length
+                );
+
+                setRecentLoans(
+                    response.data.slice(0, 5)
+                );
+
+                setActiveLoans(
+                    response.data.filter(
+                        (loan: any) =>
+                            loan.returnedUtc === null
+                    ).length
+                );
+            });
+
+        celdApi
+            .get("/equipment/availability")
+            .then(response => {
+                setAvailableEquipment(
+                    response.data.filter(
+                        (equipment: any) =>
+                            equipment.isAvailable
+                    ).length
+                );
+            });
     }, []);
 
     return (
@@ -131,43 +169,109 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 </div>
+
+                <div className="col-md-6 mb-4">
+                    <div className="card text-bg-info shadow-lg">
+                        <div className="card-body text-center">
+                            <h5>
+                                Available Equipment
+                            </h5>
+
+                            <h2>
+                                {availableEquipment}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-md-6 mb-4">
+                    <div className="card text-bg-dark shadow-lg">
+                        <div className="card-body text-center">
+                            <h5>
+                                Active Loans
+                            </h5>
+
+                            <h2>
+                                {activeLoans}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div className="card shadow-lg">
+            <div className="row mt-3">
+                <div className="col-md-6 mb-4">
+                    <div className="card shadow">
+                        <div className="card-body">
+                            <h4>
+                                Recent Reservations
+                            </h4>
+
+                            <ul className="list-group">
+                                {recentReservations.map(
+                                    reservation => (
+                                        <li
+                                            key={reservation.id}
+                                            className="list-group-item"
+                                        >
+                                            <strong>
+                                                Student:
+                                            </strong>{" "}
+                                            {
+                                                reservation.studentNumber
+                                            }
+                                        </li>
+                                    )
+                                )}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-md-6 mb-4">
+                    <div className="card shadow">
+                        <div className="card-body">
+                            <h4>
+                                Recent Lending Activity
+                            </h4>
+
+                            <ul className="list-group">
+                                {recentLoans.map(
+                                    loan => (
+                                        <li
+                                            key={loan.id}
+                                            className="list-group-item"
+                                        >
+                                            <strong>
+                                                Student:
+                                            </strong>{" "}
+                                            {
+                                                loan.studentNumber
+                                            }
+                                        </li>
+                                    )
+                                )}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="card shadow-lg mt-4">
                 <div className="card-body">
                     <h3>
                         System Overview
                     </h3>
 
                     <p>
-                        CELD manages equipment inventory,
-                        student records, reservations,
-                        lending transactions, equipment
-                        returns and activity tracking from
-                        a centralized web application.
+                        CELD manages equipment,
+                        students, reservations,
+                        lending transactions,
+                        equipment returns and
+                        availability tracking
+                        through a centralized
+                        web application.
                     </p>
-
-                    <ul>
-                        <li>
-                            Equipment Management
-                        </li>
-
-                        <li>
-                            Student Management
-                        </li>
-
-                        <li>
-                            Reservation Tracking
-                        </li>
-
-                        <li>
-                            Lending & Returns
-                        </li>
-
-                        <li>
-                            Activity History
-                        </li>
-                    </ul>
                 </div>
             </div>
 
@@ -175,13 +279,15 @@ export default function DashboardPage() {
                 <hr />
 
                 <p>
-                    Campus Equipment Lending Desk
-                    (CELD)
+                    Campus Equipment Lending Desk (CELD)
                 </p>
 
                 <p>
-                    React + ASP.NET Core + EF Core +
-                    SQL Server
+                    Group 7 - Profile A
+                </p>
+
+                <p>
+                    React • ASP.NET Core • EF Core • SQL Server
                 </p>
             </footer>
         </div>

@@ -21,6 +21,18 @@ export default function EquipmentPage() {
     const [categoryId, setCategoryId] =
         useState("");
 
+    const [editingId, setEditingId] =
+        useState("");
+
+    const [editingAssetTag, setEditingAssetTag] =
+        useState("");
+
+    const [editingName, setEditingName] =
+        useState("");
+
+    const [editingCategoryId, setEditingCategoryId] =
+        useState("");
+
     const loadEquipment = () => {
         celdApi
             .get("/equipment")
@@ -53,6 +65,43 @@ export default function EquipmentPage() {
                 "Unable to create equipment."
             );
         }
+    };
+
+    const startEdit = (
+        equipment: Equipment
+    ) => {
+        setEditingId(
+            equipment.id
+        );
+
+        setEditingAssetTag(
+            equipment.assetTag
+        );
+
+        setEditingName(
+            equipment.name
+        );
+
+        setEditingCategoryId(
+            equipment.categoryId
+        );
+    };
+
+    const updateEquipment = async () => {
+        await celdApi.patch(
+            `/equipment/${editingId}`,
+            {
+                assetTag: editingAssetTag,
+                name: editingName,
+                categoryId: editingCategoryId
+            });
+
+        setEditingId("");
+        setEditingAssetTag("");
+        setEditingName("");
+        setEditingCategoryId("");
+
+        loadEquipment();
     };
 
     const deleteEquipment = async (
@@ -121,9 +170,54 @@ export default function EquipmentPage() {
                 </button>
             </div>
 
+            {editingId && (
+                <div className="card shadow p-3 mb-4">
+                    <h3>Edit Equipment</h3>
+
+                    <input
+                        className="form-control mb-2"
+                        value={editingAssetTag}
+                        onChange={e =>
+                            setEditingAssetTag(
+                                e.target.value
+                            )
+                        }
+                    />
+
+                    <input
+                        className="form-control mb-2"
+                        value={editingName}
+                        onChange={e =>
+                            setEditingName(
+                                e.target.value
+                            )
+                        }
+                    />
+
+                    <input
+                        className="form-control mb-3"
+                        value={editingCategoryId}
+                        onChange={e =>
+                            setEditingCategoryId(
+                                e.target.value
+                            )
+                        }
+                    />
+
+                    <button
+                        className="btn btn-warning"
+                        onClick={updateEquipment}
+                    >
+                        Save Changes
+                    </button>
+                </div>
+            )}
+
             <div className="card shadow">
                 <div className="card-body">
-                    <h3>Equipment Inventory</h3>
+                    <h3>
+                        Equipment Inventory
+                    </h3>
 
                     <table className="table table-striped table-hover">
                         <thead>
@@ -150,18 +244,31 @@ export default function EquipmentPage() {
 
                                     <td>
                                         {item.categoryId ===
-                                        "11111111-1111-1111-1111-111111111111" ? (
-                                            <span className="badge bg-primary">
-                                                Laptop
-                                            </span>
-                                        ) : (
-                                            <span className="badge bg-success">
-                                                Camera
-                                            </span>
-                                        )}
+                                        "11111111-1111-1111-1111-111111111111"
+                                            ? (
+                                                <span className="badge bg-primary">
+                                                    Laptop
+                                                </span>
+                                            )
+                                            : (
+                                                <span className="badge bg-success">
+                                                    Camera
+                                                </span>
+                                            )}
                                     </td>
 
                                     <td>
+                                        <button
+                                            className="btn btn-primary btn-sm me-2"
+                                            onClick={() =>
+                                                startEdit(
+                                                    item
+                                                )
+                                            }
+                                        >
+                                            Edit
+                                        </button>
+
                                         <button
                                             className="btn btn-danger btn-sm"
                                             onClick={() => {

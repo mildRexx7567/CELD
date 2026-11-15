@@ -9,9 +9,27 @@ type Reservation = {
     reservedUntilUtc: string;
 };
 
+type Equipment = {
+    id: string;
+    assetTag: string;
+    name: string;
+};
+
+type Student = {
+    studentNumber: string;
+    firstName: string;
+    lastName: string;
+};
+
 export default function ReservationsPage() {
     const [reservations, setReservations] =
         useState<Reservation[]>([]);
+
+    const [equipmentList, setEquipmentList] =
+        useState<Equipment[]>([]);
+
+    const [students, setStudents] =
+        useState<Student[]>([]);
 
     const [equipmentItemId, setEquipmentItemId] =
         useState("");
@@ -34,6 +52,16 @@ export default function ReservationsPage() {
 
     useEffect(() => {
         loadReservations();
+
+        celdApi
+            .get("/equipment")
+            .then(response =>
+                setEquipmentList(response.data));
+
+        celdApi
+            .get("/students")
+            .then(response =>
+                setStudents(response.data));
     }, []);
 
     const createReservation = async () => {
@@ -78,6 +106,21 @@ export default function ReservationsPage() {
         loadReservations();
     };
 
+    const equipmentName = (
+        equipmentId: string
+    ) => {
+        const equipment =
+            equipmentList.find(
+                e =>
+                    e.id ===
+                    equipmentId
+            );
+
+        return equipment
+            ? `${equipment.assetTag} - ${equipment.name}`
+            : equipmentId;
+    };
+
     return (
         <div className="container mt-4">
             <h1>Reservations</h1>
@@ -85,27 +128,71 @@ export default function ReservationsPage() {
             <div className="card shadow p-3 mb-4">
                 <h3>Create Reservation</h3>
 
-                <input
-                    className="form-control mb-2"
-                    placeholder="Equipment Id"
+                <select
+                    className="form-select mb-2"
                     value={equipmentItemId}
                     onChange={e =>
                         setEquipmentItemId(
                             e.target.value
                         )
                     }
-                />
+                >
+                    <option value="">
+                        Select Equipment
+                    </option>
 
-                <input
-                    className="form-control mb-2"
-                    placeholder="Student Number"
+                    {equipmentList.map(
+                        equipment => (
+                            <option
+                                key={equipment.id}
+                                value={equipment.id}
+                            >
+                                {equipment.assetTag}
+                                {" - "}
+                                {equipment.name}
+                            </option>
+                        )
+                    )}
+                </select>
+
+                <select
+                    className="form-select mb-2"
                     value={studentNumber}
                     onChange={e =>
                         setStudentNumber(
                             e.target.value
                         )
                     }
-                />
+                >
+                    <option value="">
+                        Select Student
+                    </option>
+
+                    {students.map(
+                        student => (
+                            <option
+                                key={
+                                    student.studentNumber
+                                }
+                                value={
+                                    student.studentNumber
+                                }
+                            >
+                                {
+                                    student.studentNumber
+                                }
+                                {" - "}
+                                {
+                                    student.firstName
+                                }
+                                {" "}
+                                {
+                                    student.lastName
+                                }
+                            </option>
+                        )
+                    )}
+                </select>
 
                 <input
                     type="datetime-local"
@@ -162,7 +249,9 @@ export default function ReservationsPage() {
                                     </td>
 
                                     <td>
-                                        {r.equipmentItemId}
+                                        {equipmentName(
+                                            r.equipmentItemId
+                                        )}
                                     </td>
 
                                     <td>
