@@ -1,167 +1,157 @@
-import { useEffect, useState } from "react";
-import { celdApi } from "../api/celdApi";
+import { useState } from "react";
 
-type Student = {
-    studentNumber: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-};
+interface Student {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+}
 
 export default function StudentsPage() {
-    const [students, setStudents] =
-        useState<Student[]>([]);
+  const [students, setStudents] = useState<Student[]>([
+    {
+      id: 1,
+      name: "Juan Perez",
+      email: "juan@email.com",
+      phone: "787-111-1111",
+    },
+    {
+      id: 2,
+      name: "Maria Rivera",
+      email: "maria@email.com",
+      phone: "787-222-2222",
+    },
+  ]);
 
-    const [studentNumber, setStudentNumber] =
-        useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
-    const [firstName, setFirstName] =
-        useState("");
+  const handleAddStudent = (e: React.FormEvent) => {
+    e.preventDefault();
 
-    const [lastName, setLastName] =
-        useState("");
+    if (!name || !email || !phone) {
+      alert("Please complete all fields.");
+      return;
+    }
 
-    const [email, setEmail] =
-        useState("");
-
-    const loadStudents = () => {
-        celdApi
-            .get("/students")
-            .then(response =>
-                setStudents(response.data));
+    const newStudent: Student = {
+      id: Date.now(),
+      name,
+      email,
+      phone,
     };
 
-    useEffect(() => {
-        loadStudents();
-    }, []);
+    setStudents([...students, newStudent]);
 
-    const createStudent = async () => {
-        await celdApi.post(
-            "/students",
-            {
-                studentNumber,
-                firstName,
-                lastName,
-                email
-            });
+    setName("");
+    setEmail("");
+    setPhone("");
+  };
 
-        setStudentNumber("");
-        setFirstName("");
-        setLastName("");
-        setEmail("");
+  const handleDeleteStudent = (id: number) => {
+    if (window.confirm("Are you sure you want to delete this student?")) {
+      setStudents(students.filter((student) => student.id !== id));
+    }
+  };
 
-        loadStudents();
-    };
+  return (
+    <div className="container mt-4">
+      <h2 className="mb-4">Students Management</h2>
 
-    return (
-        <div className="container mt-4">
-            <h1>Students</h1>
-
-            <div className="card shadow p-3 mb-4">
-                <h3 className="mb-3">
-                    Create Student
-                </h3>
-
-                <input
-                    className="form-control mb-2"
-                    placeholder="Student Number"
-                    value={studentNumber}
-                    onChange={e =>
-                        setStudentNumber(
-                            e.target.value
-                        )
-                    }
-                />
-
-                <input
-                    className="form-control mb-2"
-                    placeholder="First Name"
-                    value={firstName}
-                    onChange={e =>
-                        setFirstName(
-                            e.target.value
-                        )
-                    }
-                />
-
-                <input
-                    className="form-control mb-2"
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChange={e =>
-                        setLastName(
-                            e.target.value
-                        )
-                    }
-                />
-
-                <input
-                    className="form-control mb-3"
-                    placeholder="Email"
-                    value={email}
-                    onChange={e =>
-                        setEmail(
-                            e.target.value
-                        )
-                    }
-                />
-
-                <button
-                    className="btn btn-success"
-                    onClick={createStudent}
-                >
-                    Create Student
-                </button>
-            </div>
-
-            <div className="card shadow">
-                <div className="card-body">
-                    <h3>Student Directory</h3>
-
-                    <table className="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Student Number</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {students.map(student => (
-                                <tr
-                                    key={
-                                        student.studentNumber
-                                    }
-                                >
-                                    <td>
-                                        <span className="badge bg-primary">
-                                            {
-                                                student.studentNumber
-                                            }
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <strong>
-                                            {
-                                                student.firstName
-                                            }
-                                        </strong>{" "}
-                                        {
-                                            student.lastName
-                                        }
-                                    </td>
-
-                                    <td>
-                                        {student.email}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      <div className="card mb-4">
+        <div className="card-header bg-success text-white">
+          Add Student
         </div>
-    );
+
+        <div className="card-body">
+          <form onSubmit={handleAddStudent}>
+            <div className="row">
+              <div className="col-md-4 mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Student Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              <div className="col-md-4 mb-3">
+                <input
+                  type="email"
+                  className="form-control"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="col-md-4 mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <button type="submit" className="btn btn-success">
+              Add Student
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header bg-primary text-white">
+          Student List ({students.length})
+        </div>
+
+        <div className="card-body">
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {students.map((student) => (
+                <tr key={student.id}>
+                  <td>{student.id}</td>
+                  <td>{student.name}</td>
+                  <td>{student.email}</td>
+                  <td>{student.phone}</td>
+
+                  <td>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleDeleteStudent(student.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+
+              {students.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="text-center">
+                    No students found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 }
